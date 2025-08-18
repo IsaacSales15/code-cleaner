@@ -24,7 +24,7 @@ public class RemoveNeverUsedImports {
         // Define o diretório ou arquivo Java a ser processado
         // Alterar o caminho conforme necessário
         Path dir = Paths.get(
-                "C:\\Users\\isaac\\OneDrive\\Documentos\\dev\\teste\\teste.java");
+                "C:\\Users\\isaac\\OneDrive\\Documentos\\smt");
 
         if (Files.isDirectory(dir)) {
             Files.walk(dir).filter(path -> path.toString().endsWith(".java"))
