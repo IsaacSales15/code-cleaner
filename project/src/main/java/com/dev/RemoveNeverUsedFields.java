@@ -6,6 +6,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.type.TypeParameter;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -31,7 +32,6 @@ public class RemoveNeverUsedFields {
     private static void processFiles(Path path) {
         try {
             CompilationUnit cn = StaticJavaParser.parse(path);
-            List<ImportDeclaration> fields = cn.getImports();
 
             Set<String> usedIdentifiers = new HashSet<>();
             cn.accept(new VoidVisitorAdapter<Void>() {
@@ -59,10 +59,7 @@ public class RemoveNeverUsedFields {
                 }
             }, null);
 
-            List<ImportDeclaration> notUsedFields = fields.stream()
-                    .filter(field -> {
-                        String fieldName = field.getName().getIdentifier();
-                    }).collect(Collectors.toList());
+            
 
         } catch (IOException e) {
             e.printStackTrace();
