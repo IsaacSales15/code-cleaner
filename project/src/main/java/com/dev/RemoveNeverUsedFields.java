@@ -2,22 +2,19 @@ package com.dev;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.type.TypeParameter;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
+
 import java.util.Set;
 
 public class RemoveNeverUsedFields {
     public static void main(String[] args) throws IOException {
-        Path dir = Paths.get("");
+        Path dir = Paths.get("C:\\Users\\isaac\\OneDrive\\Documentos\\GitHub\\code-cleaner\\teste");
 
         if (Files.isDirectory(dir)) {
             Files.walk(dir).filter(path -> path.toString().endsWith(".java"))
@@ -33,17 +30,15 @@ public class RemoveNeverUsedFields {
         try {
             CompilationUnit cn = StaticJavaParser.parse(path);
 
+            Set<String> declaredFields = new HashSet<>();
             Set<String> usedIdentifiers = new HashSet<>();
             cn.accept(new VoidVisitorAdapter<Void>() {
                 @Override
                 public void visit(FieldDeclaration declaration, Void args) {
                     for (VariableDeclarator var : declaration.getVariables()) {
-                        String varName = var.getNameAsString();
-
-                        if (!usedIdentifiers.contains(varName)) {
-                            usedIdentifiers.add(varName);
-                        }
+                        declaredFields.add(var.getNameAsString());
                     }
+                    super.visit(declaration, args);
                 }
 
                 @Override
@@ -59,7 +54,21 @@ public class RemoveNeverUsedFields {
                 }
             }, null);
 
-            
+            Set<String> notUseFields = new HashSet<>();
+            notUseFields.removeAll(usedIdentifiers);
+
+            cn.findAll(FieldDeclaration.class).removeIf(fd -> {
+                for (VariableDeclarator var : fd.getVariables()) {
+                    if (notUseFields.contains(var.getNameAsString())) {
+                        return true; 
+                    }
+                }
+                return false; 
+            });
+
+            Files.write(path, cn.toString().getBytes());
+
+            System.out.println("Arquivo processado: " + path);
 
         } catch (IOException e) {
             e.printStackTrace();
