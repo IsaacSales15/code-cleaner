@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class RemoveNeverUsedFields {
     public static void main(String[] args) throws IOException {
-        Path dir = Paths.get("C:\\Users\\isaac\\OneDrive\\Documentos\\GitHub\\code-cleaner\\teste");
+        Path dir = Paths.get("#");
 
         if (Files.isDirectory(dir)) {
             Files.walk(dir).filter(path -> path.toString().endsWith(".java"))
@@ -64,6 +64,19 @@ public class RemoveNeverUsedFields {
                     }
                 }
                 return false; 
+            });
+
+            cn.findAll(MethodDeclaration.class).forEach(methodDeclaration -> {
+                methodDeclaration.getBody().ifPresent(body -> {
+                    Set<String> declaredLocals = new HashSet<>();
+                    Set<String> usedLocals = new HashSet<>();
+
+                    body.findAll(VariableDeclarator.class).forEach(variableDeclarator -> {
+                        // if () {
+                            
+                        // }
+                    });
+                });
             });
 
             Files.write(path, cn.toString().getBytes());

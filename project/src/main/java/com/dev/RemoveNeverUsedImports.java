@@ -14,17 +14,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class RemoveNeverUsedImports {
-    
-    private static Logger logger = Logger.getLogger(RemoveNeverUsedImports.class.getName());
 
     public static void main(String[] args) throws IOException {
         // Define o diretório ou arquivo Java a ser processado
         // Alterar o caminho conforme necessário
         Path dir = Paths.get(
-                "C:\\Users\\isaac\\OneDrive\\Documentos\\smt");
+                "#");
 
         if (Files.isDirectory(dir)) {
             Files.walk(dir).filter(path -> path.toString().endsWith(".java"))
@@ -32,7 +29,7 @@ public class RemoveNeverUsedImports {
         } else if (dir.toString().endsWith(".java")) {
             processFiles(dir);
         } else {
-            logger.severe("O caminho fornecido não é um diretório ou arquivo Java válido.");
+            System.out.println("O caminho fornecido não é um diretório ou arquivo Java válido.");
         }
     }
 
@@ -117,7 +114,7 @@ public class RemoveNeverUsedImports {
             String packageName = impt.getName().asString().replace(".*", "");
             return usedIdentifiers.stream()
                 .noneMatch(id -> {
-                    logger.info("Verificando se " + id + " começa com " + packageName);
+                    System.out.println("Verificando se " + id + " começa com " + packageName);
                     return true; 
                 });
         }
@@ -128,20 +125,20 @@ public class RemoveNeverUsedImports {
 
             // Remover imports não utilizados
             if (!notUsedImport.isEmpty()) {
-                logger.info("Arquivo " + path + " possui imports não utilizados.");
-                logger.info("Imports removidos:");
+                System.out.println("Arquivo " + path + " possui imports não utilizados.");
+                System.out.println("Imports removidos:");
                 for (ImportDeclaration imp : notUsedImport) {
-                    logger.warning(" - " + imp.getNameAsString());
+                    System.out.println(" - " + imp.getNameAsString());
                     cn.remove(imp);
                 }
-                logger.info("---------------------------");
+                System.out.println("---------------------------");
             }
             Files.write(path, cn.toString().getBytes());
 
         } catch (
 
         IOException e) {
-            logger.severe("Erro: " + e);
+            System.out.println("Erro: " + e);
             e.printStackTrace();
         }
     }
