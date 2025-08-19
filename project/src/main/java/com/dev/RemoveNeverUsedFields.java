@@ -54,7 +54,7 @@ public class RemoveNeverUsedFields {
                 }
             }, null);
 
-            Set<String> notUseFields = new HashSet<>();
+            Set<String> notUseFields = new HashSet<>(declaredFields);
             notUseFields.removeAll(usedIdentifiers);
 
             cn.findAll(FieldDeclaration.class).removeIf(fd -> {
