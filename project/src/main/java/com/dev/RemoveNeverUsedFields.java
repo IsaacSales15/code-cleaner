@@ -60,10 +60,10 @@ public class RemoveNeverUsedFields {
             cn.findAll(FieldDeclaration.class).removeIf(fd -> {
                 for (VariableDeclarator var : fd.getVariables()) {
                     if (notUseFields.contains(var.getNameAsString())) {
-                        return true; 
+                        return true;
                     }
                 }
-                return false; 
+                return false;
             });
 
             cn.findAll(MethodDeclaration.class).forEach(methodDeclaration -> {
@@ -72,9 +72,13 @@ public class RemoveNeverUsedFields {
                     Set<String> usedLocals = new HashSet<>();
 
                     body.findAll(VariableDeclarator.class).forEach(variableDeclarator -> {
-                        // if () {
-                            
-                        // }
+                        if (variableDeclarator.getParentNode().filter(p -> p instanceof VariableDeclarationExpr)
+                                .isPresent()) {
+                                    declaredLocals.add(variableDeclarator.getNameAsString());
+                        }
+                    });
+                    body.findAll(NameExpr.class).forEach(nameExpr -> {
+                        usedLocals.add(nameExpr.getNameAsString());
                     });
                 });
             });

@@ -21,7 +21,7 @@ public class RemoveNeverUsedImports {
         // Define o diretório ou arquivo Java a ser processado
         // Alterar o caminho conforme necessário
         Path dir = Paths.get(
-                "#");
+                "C:\\Users\\josiane\\Documents\\projeto-smart");
 
         if (Files.isDirectory(dir)) {
             Files.walk(dir).filter(path -> path.toString().endsWith(".java"))
@@ -135,9 +135,7 @@ public class RemoveNeverUsedImports {
             }
             Files.write(path, cn.toString().getBytes());
 
-        } catch (
-
-        IOException e) {
+        } catch ( IOException e ) {
             System.out.println("Erro: " + e);
             e.printStackTrace();
         }
